@@ -12,9 +12,7 @@ import (
 func main() {
 	log.Println("API Gateway started")
 	routes := map[string]string{
-		"/files":                   ":8001",
-		"/websocket-load-balancer": ":8002",
-		"/users":                   ":8003",
+		"/files": ":8001",
 	}
 	router := mux.NewRouter()
 	for in, direction := range routes {
