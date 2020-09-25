@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"../pkg/service"
 	"github.com/gorilla/mux"
+	service "github.com/massenger/backend/services/files/pkg/service"
 )
 
 func main() {
