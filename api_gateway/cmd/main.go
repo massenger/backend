@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -9,34 +8,49 @@ import (
 	"github.com/gorilla/mux"
 )
 
+var methods = []string{
+	http.MethodGet,
+	http.MethodPut,
+	http.MethodPost,
+	http.MethodDelete,
+}
+
 func main() {
 	log.Println("API Gateway started")
 	routes := map[string]string{
 		"/files": ":8001",
 	}
 	router := mux.NewRouter()
+	var methods = []string{
+		http.MethodGet,
+		http.MethodPut,
+		http.MethodPost,
+		http.MethodDelete,
+	}
 	for in, direction := range routes {
-		router.HandleFunc(
-			in, func(w http.ResponseWriter, r *http.Request) {
-				_, err := io.WriteString(w, direct(w, r, direction+"/service"))
-				if err != nil {
-					io.WriteString(w, "invalid url")
-				}
-			},
-		)
+
+		for _, method := range methods {
+			func(method string) {
+				router.HandleFunc(in, func(w http.ResponseWriter, r *http.Request) {
+					direct(w, r, direction, method)
+				}).Methods(method)
+			}(method)
+		}
 	}
 	http.ListenAndServe(":8000", router)
 }
 
-func direct(w http.ResponseWriter, r *http.Request, direction string) string {
+func direct(w http.ResponseWriter, r *http.Request, direction, method string) string {
 
-	resp, err := http.Get("http://0.0.0.0" + direction)
-
+	req, err := http.NewRequest(method, "http://0.0.0.0"+direction, nil)
+	clnt := &http.Client{}
+	resp, err := clnt.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	defer resp.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 
@@ -45,6 +59,7 @@ func direct(w http.ResponseWriter, r *http.Request, direction string) string {
 	}
 
 	bodyString := string(bodyBytes)
+	resp.Body.Close()
 	return bodyString
 
 }
