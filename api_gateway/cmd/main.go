@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -33,7 +34,7 @@ func main() {
 			func(method string) {
 				router.HandleFunc(in, func(w http.ResponseWriter, r *http.Request) {
 					log.Println("Gateway [", in, "] to [", direction, "]")
-					direct(w, r, direction, method)
+					io.WriteString(w, direct(w, r, direction, method))
 				}).Methods(method)
 			}(method)
 		}

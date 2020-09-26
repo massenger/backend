@@ -29,15 +29,21 @@ func main() {
 }
 
 func fileService(method string, w http.ResponseWriter, r *http.Request, urlParams map[string]string) {
+
 	if method == "GET" {
+		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Get())
 	} else if method == "POST" {
+		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Post())
 	} else if method == "PUT" {
+		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Put())
 	} else if method == "DELETE" {
+		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Delete())
 	} else {
+		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.InvalidMethod(method))
 	}
 }
