@@ -1,17 +1,38 @@
 package services
 
 import (
+	"encoding/json"
 	"log"
+	"net/http"
+
+	responses "github.com/massenger/backend/services/files/pkg/service/requests"
+	responses "github.com/massenger/backend/services/files/pkg/service/responses"
 )
 
 //Get ...
-func Get() string {
-	if true {
-		log.Println("files\\get\\success")
-		return "success!"
+func Get(r *http.Request) string {
+	request := requests.CreatePointer()
+	err = json.NewDecoder(r.Body).Decode(&request)
+	response := responses.New()
+	if err != nil {
+		response.Ok = false
+		responseByte, _ := json.Marshal(response)
+		responseString := string(responseByte)
+		return responseString
 	}
-	return "invalid"
-
+	//search request.ID
+	//find or dont find
+	if false {
+		response.Ok = false
+		responseByte, _ := json.Marshal(response)
+		responseString := string(responseByte)
+		return responseString
+	}
+	response.FileName = "hello.txt"
+	response.FileContents = "asdghbvdse" //open hello.txt and return val
+	responseByte, _ := json.Marshal(response)
+	responseString := string(responseByte)
+	return responseString
 }
 
 //Post ...
