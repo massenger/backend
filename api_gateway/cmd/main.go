@@ -32,6 +32,7 @@ func main() {
 		for _, method := range methods {
 			func(method string) {
 				router.HandleFunc(in, func(w http.ResponseWriter, r *http.Request) {
+					log.Println("Gateway [", in, "] to [", direction, "]")
 					direct(w, r, direction, method)
 				}).Methods(method)
 			}(method)
@@ -42,7 +43,7 @@ func main() {
 
 func direct(w http.ResponseWriter, r *http.Request, direction, method string) string {
 
-	req, err := http.NewRequest(method, "http://0.0.0.0"+direction, nil)
+	req, err := http.NewRequest(method, "http://localhost"+direction, nil)
 	clnt := &http.Client{}
 	resp, err := clnt.Do(req)
 	if err != nil {
