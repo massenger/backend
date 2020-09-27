@@ -34,6 +34,7 @@ func main() {
 		for _, method := range methods {
 			func(method string) {
 				router.HandleFunc(in, func(w http.ResponseWriter, r *http.Request) {
+					w.Header().Set("Content-Type", "application/json")
 					log.Println("Gateway [", in, "] to [", direction, "]")
 					io.WriteString(w, direct(w, r, direction, method))
 				}).Methods(method)
