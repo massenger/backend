@@ -2,19 +2,36 @@ package services
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
-	responses "github.com/massenger/backend/services/files/pkg/service/requests"
-	responses "github.com/massenger/backend/services/files/pkg/service/responses"
+	"github.com/davecgh/go-spew/spew"
+	"github.com/massenger/backend/services/files/pkg/requests"
+	"github.com/massenger/backend/services/files/pkg/responses"
 )
 
 //Get ...
 func Get(r *http.Request) string {
+	if true {
+		log.Println("files\\delete\\success")
+		return "success!"
+	}
+	return "invalid"
+}
+
+//Post ...
+func Post(r *http.Request) string {
+	defer r.Body.Close()
 	request := requests.CreatePointer()
-	err = json.NewDecoder(r.Body).Decode(&request)
+	body, err := ioutil.ReadAll(r.Body)
+	json.Unmarshal(body, &request)
+	err = json.Unmarshal(body, &request)
 	response := responses.New()
 	if err != nil {
+		log.Println("couldn't decode json")
+		log.Println(err)
+		spew.Dump(request)
 		response.Ok = false
 		responseByte, _ := json.Marshal(response)
 		responseString := string(responseByte)
@@ -33,16 +50,6 @@ func Get(r *http.Request) string {
 	responseByte, _ := json.Marshal(response)
 	responseString := string(responseByte)
 	return responseString
-}
-
-//Post ...
-func Post() string {
-	if true {
-		log.Println("files\\post\\success")
-		return "success!"
-	}
-	return "invalid"
-
 }
 
 //Put ...

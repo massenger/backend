@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/massenger/backend/services/files/pkg/service"
+	service "github.com/massenger/backend/services/files/pkg/service"
 )
 
 func main() {
@@ -35,7 +35,7 @@ func fileService(method string, w http.ResponseWriter, r *http.Request, urlParam
 		io.WriteString(w, service.Get(r))
 	} else if method == "POST" {
 		w.Header().Set("Content-Type", "application/json")
-		io.WriteString(w, service.Post())
+		io.WriteString(w, service.Post(r))
 	} else if method == "PUT" {
 		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Put())

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"io"
 	"io/ioutil"
 	"log"
@@ -43,8 +44,11 @@ func main() {
 }
 
 func direct(w http.ResponseWriter, r *http.Request, direction, method string) string {
-
-	req, err := http.NewRequest(method, "http://localhost"+direction, nil)
+	jsonStr, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic("im working here lol")
+	}
+	req, err := http.NewRequest(method, "http://localhost"+direction, bytes.NewBuffer(jsonStr))
 	clnt := &http.Client{}
 	resp, err := clnt.Do(req)
 	if err != nil {
