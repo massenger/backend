@@ -9,10 +9,11 @@ import (
 
 	"github.com/massenger/backend/services/files/pkg/requests"
 	"github.com/massenger/backend/services/files/pkg/responses"
+	"gorm.io/gorm"
 )
 
 //Get ...
-func Get(r *http.Request, id string) string {
+func Get(r *http.Request, id string, db *gorm.DB) string {
 	idAsInt, err := strconv.ParseInt(id, 0, 64)
 	response := responses.New()
 	if err != nil {
@@ -41,7 +42,7 @@ func Get(r *http.Request, id string) string {
 }
 
 //Post ...
-func Post(r *http.Request) string {
+func Post(r *http.Request, db *gorm.DB) string {
 	defer r.Body.Close()
 	request := requests.CreatePointer()
 	body, err := ioutil.ReadAll(r.Body)
@@ -64,6 +65,7 @@ func Post(r *http.Request) string {
 		log.Println("files\\post\\fail")
 		return responseString
 	}
+
 	response.FileName = "hello.txt"
 	response.Ok = true
 	response.FileContents = "asdghbvdse" //open hello.txt and return val

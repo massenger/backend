@@ -7,10 +7,12 @@ import (
 
 	"github.com/gorilla/mux"
 	service "github.com/massenger/backend/services/files/pkg/service"
+	storage "github.com/massenger/backend/services/files/pkg/storage"
 )
 
 func main() {
 	log.Println("File Service stated @ 8001")
+	storage.Connect()
 	fileRouter := mux.NewRouter()
 	methods := []string{
 		http.MethodPost,
@@ -33,9 +35,9 @@ func fileService(method string, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	switch method {
 	case http.MethodGet:
-		io.WriteString(w, service.Get(r, r.URL.Query().Get("id")))
+		io.WriteString(w, service.Get(r, r.URL.Query().Get("id"), db))
 	case http.MethodPost:
-		io.WriteString(w, service.Post(r))
+		io.WriteString(w, service.Post(r, db))
 	case http.MethodPut:
 		io.WriteString(w, service.Put())
 	case http.MethodDelete:
