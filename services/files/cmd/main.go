@@ -31,15 +31,17 @@ func main() {
 func fileService(method string, w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-	if method == "GET" {
+	switch method {
+	case http.MethodGet:
 		io.WriteString(w, service.Get(r, r.URL.Query().Get("id")))
-	} else if method == "POST" {
+	case http.MethodPost:
 		io.WriteString(w, service.Post(r))
-	} else if method == "PUT" {
+	case http.MethodPut:
 		io.WriteString(w, service.Put())
-	} else if method == "DELETE" {
+	case http.MethodDelete:
 		io.WriteString(w, service.Delete())
-	} else {
+	default:
 		io.WriteString(w, service.InvalidMethod(method))
 	}
+
 }
