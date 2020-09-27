@@ -6,6 +6,7 @@ type Response struct {
 	FileList     []string `json:"filelist"`
 	FileName     string   `json:"filename"`
 	FileContents string   `json:"filecontents"`
+	ID           int      `json:"id"`
 }
 
 //New ...

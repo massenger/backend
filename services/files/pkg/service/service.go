@@ -9,6 +9,7 @@ import (
 
 	"github.com/massenger/backend/services/files/pkg/requests"
 	"github.com/massenger/backend/services/files/pkg/responses"
+	"github.com/massenger/backend/services/files/pkg/storage"
 	"gorm.io/gorm"
 )
 
@@ -23,22 +24,24 @@ func Get(r *http.Request, id string, db *gorm.DB) string {
 		log.Println("files\\get\\fail")
 		return responseString
 	}
-	if idAsInt == 4 {
-
-		response.Ok = true
-		response.FileName = "hello4.mp4"
-		response.FileContents = "somebody once told me the world was gonna roll me"
+	file := &storage.File{}
+	db.First(&file, idAsInt) // find product with integer primary key
+	if file.ID == 0 {
+		response.Ok = false
 		responseByte, _ := json.Marshal(response)
 		responseString := string(responseByte)
-		return responseString
-		log.Println("files\\get\\success")
+		log.Println("files\\get\\fail")
 		return responseString
 	}
-	response.Ok = false
+	response.ID = file.ID
+	response.FileName = file.FileName
+	response.FileContents = file.FileContents
+	response.Ok = true
 	responseByte, _ := json.Marshal(response)
 	responseString := string(responseByte)
-	log.Println("files\\get\\fail")
+	log.Println("files\\get\\success")
 	return responseString
+
 }
 
 //Post ...
@@ -58,44 +61,56 @@ func Post(r *http.Request, db *gorm.DB) string {
 	}
 	//search request.ID
 	//find or dont find
-	if false {
-		response.Ok = false
+
+	if valid(request) {
+		file := &storage.File{}
+		file.FileName = request.FileName
+		file.FileContents = request.FileContents
+		file.Owner = "anon"
+		file.Permission = 0
+		db.Create(file)
+		response.ID = file.ID
+		response.Ok = true
 		responseByte, _ := json.Marshal(response)
 		responseString := string(responseByte)
-		log.Println("files\\post\\fail")
+		log.Println("files\\post\\success")
 		return responseString
 	}
-
-	response.FileName = "hello.txt"
-	response.Ok = true
-	response.FileContents = "asdghbvdse" //open hello.txt and return val
+	response.Ok = false
 	responseByte, _ := json.Marshal(response)
 	responseString := string(responseByte)
-	log.Println("files\\post\\success")
+	log.Println("files\\post\\fail")
 	return responseString
 }
 
 //Put ...
-func Put() string {
+func Put() string { //Wait until auth
 	if true {
-		log.Println("files\\put\\success")
-		return "success!"
+		log.Println("files\\put\\fail")
+		return "fail!"
 	}
-	return "invalid"
+	return ""
 
 }
 
 //Delete ...
-func Delete() string {
+func Delete() string { //Wait until auth
 	if true {
-		log.Println("files\\delete\\success")
-		return "success!"
+		log.Println("files\\delete\\fail")
+		return "fail!"
 	}
-	return "invalid"
+	return ""
 
 }
 
 //InvalidMethod ...
 func InvalidMethod(method string) string {
 	return "Invalid method " + method
+}
+
+//Need to work on this
+func valid(r *requests.Requests) bool {
+	retVal := true
+
+	return retVal
 }

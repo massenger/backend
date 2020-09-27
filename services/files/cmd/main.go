@@ -8,11 +8,14 @@ import (
 	"github.com/gorilla/mux"
 	service "github.com/massenger/backend/services/files/pkg/service"
 	storage "github.com/massenger/backend/services/files/pkg/storage"
+	"gorm.io/gorm"
 )
 
+var db *gorm.DB
+
 func main() {
+	db = storage.ConnectDB("zane", "52455245", "localhost", "massenger")
 	log.Println("File Service stated @ 8001")
-	storage.Connect()
 	fileRouter := mux.NewRouter()
 	methods := []string{
 		http.MethodPost,
