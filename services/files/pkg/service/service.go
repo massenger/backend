@@ -16,10 +16,10 @@ func Get(r *http.Request, id string) string {
 	idAsInt, err := strconv.ParseInt(id, 0, 64)
 	response := responses.New()
 	if err != nil {
-		log.Println(err)
 		response.Ok = false
 		responseByte, _ := json.Marshal(response)
 		responseString := string(responseByte)
+		log.Println("files\\get\\fail")
 		return responseString
 	}
 	if idAsInt == 4 {
@@ -36,6 +36,7 @@ func Get(r *http.Request, id string) string {
 	response.Ok = false
 	responseByte, _ := json.Marshal(response)
 	responseString := string(responseByte)
+	log.Println("files\\get\\fail")
 	return responseString
 }
 
@@ -48,10 +49,10 @@ func Post(r *http.Request) string {
 	err = json.Unmarshal(body, &request)
 	response := responses.New()
 	if err != nil {
-		log.Println("couldn't decode json")
 		response.Ok = false
 		responseByte, _ := json.Marshal(response)
 		responseString := string(responseByte)
+		log.Println("files\\post\\fail")
 		return responseString
 	}
 	//search request.ID
@@ -60,6 +61,7 @@ func Post(r *http.Request) string {
 		response.Ok = false
 		responseByte, _ := json.Marshal(response)
 		responseString := string(responseByte)
+		log.Println("files\\post\\fail")
 		return responseString
 	}
 	response.FileName = "hello.txt"
