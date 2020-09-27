@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -17,11 +18,12 @@ var methods = []string{
 	http.MethodDelete,
 }
 
+var routes = map[string]string{
+	"/files": ":8001",
+}
+
 func main() {
 	log.Println("API Gateway started")
-	routes := map[string]string{
-		"/files": ":8001",
-	}
 	router := mux.NewRouter()
 	var methods = []string{
 		http.MethodGet,
@@ -49,7 +51,14 @@ func direct(w http.ResponseWriter, r *http.Request, direction, method string) st
 	if err != nil {
 		panic("im working here lol")
 	}
-	req, err := http.NewRequest(method, "http://localhost"+direction, bytes.NewBuffer(jsonStr))
+	url := r.URL.String()
+	params := strings.SplitAfter(url, ":8000")[0]
+	for route := range routes {
+		params = strings.SplitAfter(params, route)[1]
+
+	}
+	log.Println("http://localhost" + direction + "/" + params)
+	req, err := http.NewRequest(method, "http://localhost"+direction+"/"+params, bytes.NewBuffer(jsonStr))
 	clnt := &http.Client{}
 	resp, err := clnt.Do(req)
 	if err != nil {

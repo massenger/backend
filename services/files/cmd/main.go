@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
 	service "github.com/massenger/backend/services/files/pkg/service"
 )
@@ -21,18 +22,19 @@ func main() {
 	for _, method := range methods {
 		func(method string) {
 			fileRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-				fileService(method, w, r, mux.Vars(r))
+				fileService(method, w, r)
 			}).Methods(method)
 		}(method)
 	}
 	panic(http.ListenAndServe("localhost:8001", fileRouter))
 }
 
-func fileService(method string, w http.ResponseWriter, r *http.Request, urlParams map[string]string) {
+func fileService(method string, w http.ResponseWriter, r *http.Request) {
 
 	if method == "GET" {
 		w.Header().Set("Content-Type", "application/json")
-		io.WriteString(w, service.Get(r))
+		spew.Dump(r.URL.Query())
+		io.WriteString(w, service.Get(r, r.URL.Query().Get("id")))
 	} else if method == "POST" {
 		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Post(r))

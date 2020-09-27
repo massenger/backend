@@ -5,19 +5,38 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/massenger/backend/services/files/pkg/requests"
 	"github.com/massenger/backend/services/files/pkg/responses"
 )
 
 //Get ...
-func Get(r *http.Request) string {
-	if true {
-		log.Println("files\\delete\\success")
-		return "success!"
+func Get(r *http.Request, id string) string {
+	idAsInt, err := strconv.ParseInt(id, 0, 64)
+	response := responses.New()
+	if err != nil {
+		log.Println(err)
+		response.Ok = false
+		responseByte, _ := json.Marshal(response)
+		responseString := string(responseByte)
+		return responseString
 	}
-	return "invalid"
+	if idAsInt == 4 {
+
+		response.Ok = true
+		response.FileName = "hello4.mp4"
+		response.FileContents = "somebody once told me the world was gonna roll me"
+		responseByte, _ := json.Marshal(response)
+		responseString := string(responseByte)
+		return responseString
+		log.Println("files\\get\\success")
+		return responseString
+	}
+	response.Ok = false
+	responseByte, _ := json.Marshal(response)
+	responseString := string(responseByte)
+	return responseString
 }
 
 //Post ...
@@ -30,8 +49,6 @@ func Post(r *http.Request) string {
 	response := responses.New()
 	if err != nil {
 		log.Println("couldn't decode json")
-		log.Println(err)
-		spew.Dump(request)
 		response.Ok = false
 		responseByte, _ := json.Marshal(response)
 		responseString := string(responseByte)
@@ -46,9 +63,11 @@ func Post(r *http.Request) string {
 		return responseString
 	}
 	response.FileName = "hello.txt"
+	response.Ok = true
 	response.FileContents = "asdghbvdse" //open hello.txt and return val
 	responseByte, _ := json.Marshal(response)
 	responseString := string(responseByte)
+	log.Println("files\\post\\success")
 	return responseString
 }
 
