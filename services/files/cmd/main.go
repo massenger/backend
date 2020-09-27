@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
 	service "github.com/massenger/backend/services/files/pkg/service"
 )
@@ -31,21 +30,16 @@ func main() {
 
 func fileService(method string, w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("Content-Type", "application/json")
 	if method == "GET" {
-		w.Header().Set("Content-Type", "application/json")
-		spew.Dump(r.URL.Query())
 		io.WriteString(w, service.Get(r, r.URL.Query().Get("id")))
 	} else if method == "POST" {
-		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Post(r))
 	} else if method == "PUT" {
-		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Put())
 	} else if method == "DELETE" {
-		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.Delete())
 	} else {
-		w.Header().Set("Content-Type", "application/json")
 		io.WriteString(w, service.InvalidMethod(method))
 	}
 }
