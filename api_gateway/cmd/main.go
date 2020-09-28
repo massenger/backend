@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -20,6 +19,7 @@ var methods = []string{
 
 var routes = map[string]string{
 	"/files": ":8001",
+	"/users": ":8002",
 }
 
 func main() {
@@ -34,6 +34,7 @@ func main() {
 	for in, direction := range routes {
 
 		for _, method := range methods {
+			in, direction := in, direction
 			func(method string) {
 				router.HandleFunc(in, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Set("Content-Type", "application/json")
@@ -51,14 +52,8 @@ func direct(w http.ResponseWriter, r *http.Request, direction, method string) st
 	if err != nil {
 		panic("im working here lol")
 	}
-	url := r.URL.String()
-	params := strings.SplitAfter(url, ":8000")[0]
-	for route := range routes {
-		params = strings.SplitAfter(params, route)[1]
-
-	}
-	log.Println("http://localhost" + direction + "/" + params)
-	req, err := http.NewRequest(method, "http://localhost"+direction+"/"+params, bytes.NewBuffer(jsonStr))
+	log.Println("http://localhost" + direction)
+	req, err := http.NewRequest(method, "http://localhost"+direction, bytes.NewBuffer(jsonStr))
 	clnt := &http.Client{}
 	resp, err := clnt.Do(req)
 	if err != nil {
