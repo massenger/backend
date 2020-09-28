@@ -6,3 +6,4 @@ dep:
 build:
 	go build -o builds/api_gateway api_gateway/cmd/main.go
 	go build -o builds/file_service services/files/cmd/main.go
+	go build -o builds/user_service services/users/cmd/main.go
