@@ -39,6 +39,7 @@ func main() {
 			func(method string) {
 				router.HandleFunc(in, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Set("Content-Type", "application/json")
+					w.Header().Set("Access-Control-Allow-Origin", "*")
 					direction := direction
 					direction += r.URL.String()
 					log.Println("Gateway [", in, "] to [", direction, "]")
