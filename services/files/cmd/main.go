@@ -16,7 +16,7 @@ var db *gorm.DB
 func main() {
 	db = storage.ConnectDB("zane", "52455245", "localhost", "massenger")
 	log.Println("File Service stated @ 8001")
-	fileRouter := mux.NewRouter()
+	fileRouter := mux.NewRouter().StrictSlash(false)
 	methods := []string{
 		http.MethodPost,
 		http.MethodPut,
@@ -25,7 +25,7 @@ func main() {
 	}
 	for _, method := range methods {
 		func(method string) {
-			fileRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			fileRouter.HandleFunc("/files", func(w http.ResponseWriter, r *http.Request) {
 				fileService(method, w, r)
 			}).Methods(method)
 		}(method)

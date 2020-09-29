@@ -24,7 +24,7 @@ var routes = map[string]string{
 
 func main() {
 	log.Println("API Gateway started")
-	router := mux.NewRouter()
+	router := mux.NewRouter().StrictSlash(false)
 	var methods = []string{
 		http.MethodGet,
 		http.MethodPut,
@@ -35,9 +35,12 @@ func main() {
 
 		for _, method := range methods {
 			in, direction := in, direction
+
 			func(method string) {
 				router.HandleFunc(in, func(w http.ResponseWriter, r *http.Request) {
 					w.Header().Set("Content-Type", "application/json")
+					direction := direction
+					direction += r.URL.String()
 					log.Println("Gateway [", in, "] to [", direction, "]")
 					io.WriteString(w, direct(w, r, direction, method))
 				}).Methods(method)

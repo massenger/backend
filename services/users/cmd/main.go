@@ -16,7 +16,7 @@ var db *gorm.DB
 func main() {
 	db = storage.ConnectDB("zane", "52455245", "localhost", "massenger")
 	log.Println("Users Service stated @ 8002")
-	fileRouter := mux.NewRouter()
+	fileRouter := mux.NewRouter().StrictSlash(false)
 	methods := []string{
 		http.MethodPost,
 		http.MethodPut,
@@ -25,7 +25,7 @@ func main() {
 	}
 	for _, method := range methods {
 		func(method string) {
-			fileRouter.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			fileRouter.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 				userService(method, w, r)
 			}).Methods(method)
 		}(method)
